@@ -1,29 +1,173 @@
-## GoIT Node.js Course Template Homework
+# Dokumentacja API Książki Adresowej
 
-Wykonaj forka tego repozytorium, aby wykonywać zadania domowe (2-6). Fork utworzy repozytorium na Twoim koncie na http://github.com
+## Spis treści
 
-Dodaj mentora jako collaboratora.
+- [Opis projektu](#opis-projektu)
+- [Pierwsze kroki](#pierwsze-kroki)
+  - [Baza URL](#baza-url)
+  - [Wymagane Biblioteki](#wymagane-biblioteki)
+- [Endpointy](#endpointy)
+  - [1. Lista Kontaktów](#1-lista-kontaktów)
+  - [2. Pobierz Kontakt wg ID](#2-pobierz-kontakt-wg-id)
+  - [3. Dodaj Nowy Kontakt](#3-dodaj-nowy-kontakt)
+  - [4. Aktualizuj Kontakt](#4-aktualizuj-kontakt)
+  - [5. Aktualizuj Status Ulubionego](#5-aktualizuj-status-ulubionego)
+  - [6. Usuń Kontakt](#6-usuń-kontakt)
+- [Obsługa Błędów](#obsługa-błędów)
+- [Autor](#autor)
 
-Dla każdego zadania domowego utwórz nową gałąź (branch).
+## Opis projektu
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
+Projekt "Książka Adresowa" to proste API służące do zarządzania kontaktami. Pozwala na wykonywanie operacji CRUD (Create, Read, Update, Delete) na kontaktach przechowywanych w książce adresowej. To API udostępnia endpointy do wyświetlania listy kontaktów, pobierania konkretnych kontaktów, dodawania nowych kontaktów, aktualizacji istniejących kontaktów, aktualizacji statusu ulubionego kontaktu i usuwania kontaktów.
 
-Każda nowa gałąź dla zadania powinna być tworzona z gałęzi master.
+## Pierwsze kroki
 
-Po zakończeniu wykonania zadania domowego na swojej gałęzi, należy zrobić pull request (PR). Następnie dodaj mentora do przeglądu kodu. Dopiero po zatwierdzeniu PR przez mentora możesz scalić gałąź z zadaniem domowym do gałęzi master.
+Aby korzystać z API "Książka Adresowa", wykonaj poniższe kroki, aby skonfigurować środowisko i zrozumieć dostępne endpointy.
 
-Uważnie czytaj komentarze mentora. Popraw uwagi i zrób commit na gałęzi z zadaniem domowym. Zmiany automatycznie pojawią się w PR po wysłaniu commitu z poprawkami na GitHub. Po poprawkach ponownie dodaj mentora do przeglądu kodu.
+### Baza URL
 
-- Podczas oddawania zadania domowego podaj link do PR.
-- Kod JS jest czytelny i zrozumiały, do formatowania używany jest Prettier.
+Baza URL dla wszystkich endpointów API jest zdefiniowana w pliku konfiguracyjnym (np. `.env`) jako zmienna `MONGODB_URI`. To URL jest używane do połączenia z bazą danych MongoDB.
 
-### Komendy:
+### Wymagane Biblioteki
 
-- `npm start` &mdash;  uruchamia serwer w trybie produkcyjnym
-- `npm run start:dev` &mdash; uruchamia serwer w trybie deweloperskim (development)
-- `npm run lint` &mdash; uruchamia sprawdzanie kodu z ESLint, należy wykonać przed każdym PR i poprawić wszystkie błędy lintera
-- `npm lint:fix` &mdash; to samo co powyższe, ale również automatycznie poprawia proste błędy.
+Przed rozpoczęciem korzystania z tego API, upewnij się, że zainstalowane są następujące biblioteki i zależności:
+
+- [Node.js](https://nodejs.org/) - Środowisko uruchomieniowe JavaScript.
+- [MongoDB](https://www.mongodb.com/) - Baza danych NoSQL używana przez projekt.
+- morgan, cors, dotenv, express, joj, mongo, mongoose, nodemon.
+
+Aby zainstalować zależności projektu, użyj polecenia:
+
+```bash
+npm install
+```
+
+## Endpointy
+
+### 1. Lista Kontaktów
+
+- **Ścieżka:** `/api/contacts`
+- **Metoda:** `GET`
+- **Opis:** Pobierz listę wszystkich kontaktów znajdujących się w książce adresowej.
+- **Odpowiedź:** 200 OK
+- **Przykładowa odpowiedź:**
+
+  ```json
+  [
+    {
+      "_id": "60e4d52574e786001c0b992d",
+      "name": "Jan Kowalski",
+      "email": "jan.kowalski@example.com",
+      "phone": "+123456789",
+      "favorite": true
+    }
+    // więcej kontaktów...
+  ]
+  ```
+
+### 2. Pobierz Kontakt wg ID
+
+- **Ścieżka:** `/api/contacts/{contactId}`
+- **Metoda:** `GET`
+- **Opis:** Pobierz szczegóły konkretnego kontaktu na podstawie jego ID.
+- **Parametry URL:** {contactId} - ID kontaktu
+- **Odpowiedź:**
+  200 OK - Jeśli kontakt został znaleziony
+  404 Not Found - Jeśli kontakt nie został znaleziony lub podano nieprawidłowe ID
+
+### 3. Dodaj Nowy Kontakt
+
+- **Ścieżka:** `/api/contacts`
+- **Metoda:** `POST`
+- **Opis:** Dodaj nowy kontakt do książki adresowej.
+- **Ciało żądania:** JSON z danymi kontaktu
+- **Przykładowe ciało żądania:**
+
+```json
+[
+  {
+    "name": "Anna Nowak",
+    "email": "anna.nowak@example.com",
+    "phone": "+987654321"
+  }
+]
+```
+
+- **Odpowiedź:** 201 Created
+- **Przykładowa odpowiedź:**
+
+```json
+[
+  {
+    "_id": "60e4d52574e786001c0b992e",
+    "name": "Anna Nowak",
+    "email": "anna.nowak@example.com",
+    "phone": "+987654321",
+    "favorite": false
+  }
+]
+```
+
+### 4. Aktualizuj Kontakt
+
+- **Ścieżka:** `/api/contacts/{contactId}`
+- **Metoda:** `PUT`
+- **Opis:** Zaktualizuj dane konkretnego kontaktu na podstawie jego ID.
+- **Parametry URL:** `{contactId}` - ID kontaktu
+- **Ciało żądania:** JSON z zaktualizowanymi danymi kontaktu
+- **Przykładowe ciało żądania:**
+
+```json
+[
+  {
+    "name": "Maria Kowalska",
+    "email": "maria.kowalska@example.com",
+    "phone": "987-654-321",
+    "favorite": true
+  }
+]
+```
+
+- **Odpowiedź:**
+  200 OK - Jeśli kontakt został zaktualizowany
+  404 Not Found - Jeśli kontakt nie został znaleziony lub podano nieprawidłowe ID
+
+### 5. Aktualizuj Status Ulubionego
+
+- **Ścieżka:** `/api/contacts/{contactId}/favorite`
+- **Metoda:** `PATCH`
+- **Opis:** Zaktualizuj status ulubionego kontaktu na podstawie jego ID.
+- **Parametry URL:** `{contactId}` - ID kontaktu
+- **Ciało żądania:** JSON z polem favorite
+- **Przykładowe ciało żądania:**
+
+```json
+[
+  {
+    "favorite": true
+  }
+]
+```
+
+- **Odpowiedź:**
+  200 OK - Jeśli status kontaktu został zaktualizowany
+  404 Not Found - Jeśli kontakt nie został znaleziony lub podano nieprawidłowe ID
+
+### 6. Usuń Kontakt
+
+- **Ścieżka:** `/api/contacts/{contactId}`
+- **Metoda:** `DELETE`
+- **Opis:** Usuń konkretny kontakt na podstawie jego ID.
+- **Parametry URL:** `{contactId}` - ID kontaktu
+- **Odpowiedź:**
+  200 OK - Jeśli kontakt został usunięty
+  404 Not Found - Jeśli kontakt nie został znaleziony lub podano nieprawidłowe ID
+
+## Obsługa Błędów
+
+W przypadku błędów walidacji danych, API zwraca odpowiedź HTTP 400 Bad Request wraz z odpowiednią wiadomością.
+W przypadku błędów związanych z brakiem kontaktu, API zwraca odpowiedź HTTP 404 Not Found.
+
+## Autor
+
+Ten projekt został stworzony przez [Łukasza Ciastonia].
