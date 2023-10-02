@@ -13,6 +13,10 @@
   - [4. Aktualizuj Kontakt](#4-aktualizuj-kontakt)
   - [5. Aktualizuj Status Ulubionego](#5-aktualizuj-status-ulubionego)
   - [6. Usuń Kontakt](#6-usuń-kontakt)
+  - [7. Rejestracja Użytkownika](#7-rejestracja-użytkownika)
+  - [8. Logowanie Użytkownika](#8-logowanie-użytkownika)
+  - [9. Wylogowanie Użytkownika](#9-wylogowywanie-użytkownika)
+  - [10. Pobierz Obecnie Zalogowanego Użytkownika](#10-pobierz-obecnie-zalogowanego-użytkownika)
 - [Obsługa Błędów](#obsługa-błędów)
 - [Autor](#autor)
 
@@ -162,6 +166,84 @@ npm install
 - **Odpowiedź:**
   200 OK - Jeśli kontakt został usunięty
   404 Not Found - Jeśli kontakt nie został znaleziony lub podano nieprawidłowe ID
+
+### 7. Rejestracja Użytkownika
+
+- **Ścieżka:** `/api/users/signup`
+- **Metoda:** `POST`
+- **Opis:** Zarejestruj nowego użytkownika.
+- **Ciało żądania:** JSON z danymi nowego użytkownika
+- **Przykładowe ciało żądania:**
+
+```json
+{
+  "email": "jan.kowalski@example.com",
+  "password": "haslo123"
+}
+```
+
+- **Odpowiedź:** 201 Created
+- **Przykładowa odpowiedź:**
+
+```json
+{
+  "user": {
+    "email": "jan.kowalski@example.com",
+    "subscription": "starter"
+  }
+}
+```
+
+### 8. Logowanie Użytkownika
+
+- **Ścieżka:** /api/users/login
+- **Metoda:** POST
+- **Opis:** Zaloguj istniejącego użytkownika.
+- **Ciało żądania:** JSON z danymi logowania
+- **Przykładowe ciało żądania:**
+
+```json
+
+{
+  "email": "jan.kowalski@example.com",
+  "password": "haslo123"
+}
+Odpowiedź: 200 OK
+Przykładowa odpowiedź:
+json
+Copy code
+{
+  "token": "tokenJWT",
+  "user": {
+    "email": "jan.kowalski@example.com",
+    "subscription": "starter"
+  }
+}
+```
+
+### 9. Wylogowywanie Użytkownika
+
+- **Ścieżka:** /api/users/logout
+- **Metoda:** GET
+- **Opis:** Wyloguj zalogowanego użytkownika.
+- **Nagłówek żądania:** Authorization: Bearer {tokenJWT}
+- **Odpowiedź:** 204 No Content
+
+### 10. Pobierz Obecnie Zalogowanego Użytkownika
+
+- **Ścieżka:** /api/users/current
+- **Metoda:** GET
+- **Opis:** Pobierz informacje o obecnie zalogowanym użytkowniku.
+- **Nagłówek żądania:** Authorization: Bearer {tokenJWT}
+  Odpowiedź: 200 OK
+- **Przykładowa odpowiedź:**
+
+```json
+{
+  "email": "jan.kowalski@example.com",
+  "subscription": "starter"
+}
+```
 
 ## Obsługa Błędów
 
