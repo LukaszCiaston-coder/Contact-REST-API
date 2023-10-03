@@ -13,6 +13,10 @@
   - [4. Update Contact](#4-update-contact)
   - [5. Update Favorite Status](#5-update-favorite-status)
   - [6. Delete Contact](#6-delete-contact)
+  - [7.User Registration](#7-user-registration)
+  - [8. User Login](#8-user-login)
+  - [9. User Logout](#9-user-logout)
+  - [10. Get currently logged in user](#10-get-currently-logged-in-user)
 - [Error Handling](#error-handling)
 - [Author](#author)
 
@@ -38,9 +42,9 @@ Before you start using this API, make sure the following libraries and dependenc
 
 To install project dependencies, use the following command:
 
-````bash
+```bash
 npm install
-
+```
 
 ## Endpoints
 
@@ -63,7 +67,7 @@ npm install
     }
     // more contacts...
   ]
-````
+  ```
 
 ### 2. Get Contact by ID
 
@@ -163,6 +167,85 @@ npm install
 - **Response:**
   200 OK - If the contact is deleted
   404 Not Found - If the contact is not found or an invalid ID is provided
+
+### 7. User Registration
+
+- **Path:** /api/users/signup
+- **Method:** POST
+- **Description:** Register a new user.
+- **Request Body:** JSON with new user data
+- **Example Request Body:**
+
+```json
+{
+  "email": "jan.kowalski@example.com",
+  "password": "password123"
+}
+```
+
+- **Response:** 201 Created
+- **Example Response:**
+
+```json
+{
+  "user": {
+    "email": "jan.kowalski@example.com",
+    "subscription": "starter"
+  }
+}
+```
+
+### 8. User Login
+
+- **Path:** /api/users/login
+- **Method:** POST
+- **Description:** Log in an existing user.
+- **Request Body:** JSON with login data
+- **Example Request Body:**
+
+```json
+{
+  "email": "jan.kowalski@example.com",
+  "password": "password123"
+}
+```
+
+- **Response:** 200 OK
+- **Example Response:**
+
+```json
+{
+  "token": "JWTToken",
+  "user": {
+    "email": "jan.kowalski@example.com",
+    "subscription": "starter"
+  }
+}
+```
+
+### 9. User Logout
+
+- **Path:** /api/users/logout
+- **Method:** GET
+- **Description:** Log out the currently logged-in user.
+- **Request Header:** Authorization: Bearer {JWTToken}
+- **Response:** 204 No Content
+
+### 10. Get Currently Logged-In User
+
+- **Path:** /api/users/current
+- **Method:** GET
+- **Description:** Get information about the currently logged-in user.
+- **Request Header:** Authorization: Bearer {JWTToken}
+- **Response:** 200 OK
+- **Example Response:**
+
+```json
+{
+  "email": "jan.kowalski@example.com",
+  "subscription": "starter"
+}
+```
 
 ## Error Handling
 
