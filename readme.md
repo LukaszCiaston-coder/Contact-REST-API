@@ -17,6 +17,7 @@
   - [8. User Login](#8-user-login)
   - [9. User Logout](#9-user-logout)
   - [10. Get currently logged in user](#10-get-currently-logged-in-user)
+  - [11. Update user avatar](#11-update-user-avatar)
 - [Error Handling](#error-handling)
 - [Author](#author)
 
@@ -77,6 +78,7 @@ npm install
 - **URL Parameters:** `{contactId} - Contact ID`
 - **Response:**
   200 OK - If the contact is found
+  403 Forbidden - User is attempting to access a contact that does not belong to them
   404 Not Found - If the contact is not found or an invalid ID is provided
 
 ### 3. Add New Contact
@@ -135,6 +137,7 @@ npm install
 
 - **Response:**
   200 OK - If the contact is updated
+  403 Forbidden - User is attempting to access a contact that does not belong to them
   404 Not Found - If the contact is not found or an invalid ID is provided
 
 ### 5. Update Favorite Status
@@ -156,6 +159,7 @@ npm install
 
 - **Response:**
   200 OK - If the contact's status is updated
+  403 Forbidden - User is attempting to access a contact that does not belong to them
   404 Not Found - If the contact is not found or an invalid ID is provided
 
 ### 6. Delete Contact
@@ -166,6 +170,7 @@ npm install
 - **URL Parameters:** `{contactId} - Contact ID`
 - **Response:**
   200 OK - If the contact is deleted
+  403 Forbidden - User is attempting to access a contact that does not belong to them
   404 Not Found - If the contact is not found or an invalid ID is provided
 
 ### 7. User Registration
@@ -190,10 +195,17 @@ npm install
 {
   "user": {
     "email": "jan.kowalski@example.com",
-    "subscription": "starter"
+    "subscription": "starter",
+    "avatarURL": "https://www.gravatar.com/avatar/{GRAVATAR_HASH}"
   }
 }
 ```
+
+After registration, the user is automatically assigned an avatar from Gravatar based on their email address. This avatar is accessible at the following URL:
+
+`https://www.gravatar.com/avatar/{GRAVATAR_HASH}`
+
+The Gravatar hash is generated from the user's email address and serves as a unique identifier for the Gravatar avatar.
 
 ### 8. User Login
 
@@ -218,7 +230,8 @@ npm install
   "token": "JWTToken",
   "user": {
     "email": "jan.kowalski@example.com",
-    "subscription": "starter"
+    "subscription": "starter",
+    "avatarURL": "https://www.gravatar.com/avatar/{GRAVATAR_HASH}"
   }
 }
 ```
@@ -243,9 +256,62 @@ npm install
 ```json
 {
   "email": "jan.kowalski@example.com",
-  "subscription": "starter"
+  "subscription": "starter",
+  "avatarURL": "https://www.gravatar.com/avatar/{GRAVATAR_HASH}"
 }
 ```
+
+### 11. Update User Avatar
+
+This endpoint allows users to change their avatar.
+
+- **Path:** `/api/avatars`
+- **Method:** `PATCH`
+- **Security:** Requires authentication using a JSON Web Token (JWT). To obtain the token, the user must be logged in and provide it in the Authorization header.
+
+#### Request Parameters:
+
+- **avatar:** A graphic file that will be assigned as the new user avatar. The file should be sent as part of a form with the avatar field.
+
+#### Example Request:
+
+```h
+PATCH /api/avatars
+Authorization: Bearer {TOKEN_JWT}
+Content-Type: multipart/form-data
+
+Content-Disposition: form-data; name="avatar"; filename="new_avatar.jpg"
+Content-Type: image/jpeg
+```
+
+{TOKEN_JWT} - User's JWT token, required for authentication.
+
+- **Responses:**
+- 200 OK: Avatar has been updated successfully. The response contains the URL of the new avatar.
+
+- **Example Response:**
+
+```json
+{
+  "avatarURL": "/avatars/{UNIQUE_FILENAME}.jpg"
+}
+```
+
+- 400 Bad Request: No graphic file attached in the request. Response includes the message: "No file uploaded."
+
+- 401 Unauthorized: The user is not authenticated, or the JWT token is invalid. Response includes the message: "Not authorized."
+
+- 500 Internal Server Error: Occurs when there are internal server errors during request processing.
+
+- **Notes:**
+
+- To update the avatar, the user must be authenticated and provide a valid JWT token in the Authorization header.
+
+- If the user already has an assigned avatar, the old file will be deleted from the server.
+
+- The new avatar will be resized to 250x250 pixels and converted to JPEG format with a quality of 60%.
+
+- The avatar file is publicly accessible at the URL /avatars/{UNIQUE_FILENAME}.jpg. You can use this URL to display the avatar on the user's profile page.
 
 ## Error Handling
 

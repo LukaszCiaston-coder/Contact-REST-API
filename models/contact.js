@@ -102,7 +102,7 @@ async function updateStatusContact(contactId, update) {
 
     return updatedContact;
   } catch (error) {
-    return null; // Zwracamy null w przypadku błędu
+    return null;
   }
 }
 
