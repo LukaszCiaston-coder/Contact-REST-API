@@ -12,6 +12,7 @@ const checkToken = require("./middleware/checkToken");
 const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
+const path = require("path");
 
 app.use(logger(formatsLogger));
 app.use(cors());
@@ -35,8 +36,10 @@ db.once("open", () => {
   console.log("Database connection successful");
 });
 
-app.use("/api/users", usersRouter);
+// Konfiguracja obsługi plików statycznych z folderu "public"
+app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/api/users", usersRouter);
 app.use("/api/contacts", checkToken, contactsRouter);
 
 app.use((req, res) => {
