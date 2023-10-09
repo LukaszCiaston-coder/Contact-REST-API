@@ -63,6 +63,7 @@ router.post("/signup", async (req, res, next) => {
     });
 
     res.status(201).json({
+      token,
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
